@@ -33,7 +33,9 @@ def _agent_specs() -> dict[str, AgentSpec]:
     goose_provider = os.getenv("GOOSE_MINI_PROVIDER", "custom_ollama2")
     goose_model = os.getenv("GOOSE_MINI_MODEL", "qwen2.5:7b")
     aider_model = os.getenv("AIDER_MINI_MODEL", "ollama/qwen2.5:7b")
-    opencode_model = os.getenv("OPENCODE_MINI_MODEL", "ollama/qwen2.5:7b")
+    # Proven on AnthonsMini615: OpenCode 1.18.23 -> ollama_local -> localhost:11434 -> qwen3:8b.
+    # Keep the provider/model explicit so OpenCode cannot silently fall back to a cloud provider.
+    opencode_model = os.getenv("OPENCODE_MINI_MODEL", "ollama_local/qwen3:8b")
     aoe_session = os.getenv("AOE_SESSION", "")
 
     return {
@@ -66,10 +68,11 @@ def _agent_specs() -> dict[str, AgentSpec]:
         ),
         "opencode_engineer": AgentSpec(
             name="opencode_engineer",
-            role="Repository coding worker using OpenCode with local Ollama by default",
+            role="Repository coding worker using OpenCode with the proven local Ollama route",
             executable="opencode",
             argv=("opencode", "run", "--model", opencode_model, "{task}"),
-            tier="free-local-default",
+            tier="free-local",
+            proven_on_mini=True,
         ),
         "codex_engineer": AgentSpec(
             name="codex_engineer",
