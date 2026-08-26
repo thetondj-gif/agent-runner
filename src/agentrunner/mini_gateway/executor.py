@@ -95,7 +95,7 @@ def _agent_specs() -> dict[str, AgentSpec]:
             name="aoe_delegate",
             role="Delegate a task into an existing Agent of Empires session",
             executable="aoe",
-            argv=("aoe", "prompt", aoe_session, "{task}"),
+            argv=("aoe", "send", aoe_session, "{task}"),
             tier="multi-agent",
             requires_env=("AOE_SESSION",),
             timeout_s=1200,
