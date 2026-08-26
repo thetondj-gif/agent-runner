@@ -43,7 +43,7 @@ def test_opencode_defaults_to_proven_local_ollama(monkeypatch: pytest.MonkeyPatc
     monkeypatch.delenv("OPENCODE_MINI_MODEL", raising=False)
     spec = executor._agent_specs()["opencode_engineer"]
     assert "ollama_local/qwen3:8b" in spec.argv
-    assert spec.tier == "free-local-default"
+    assert spec.tier == "free-local"
     assert spec.proven_on_mini is True
 
 
@@ -78,7 +78,7 @@ def test_route_does_not_select_paid_worker_by_default(monkeypatch: pytest.Monkey
         "agentrunner.mini_gateway.capabilities.agent_status",
         lambda: {
             "agents": {
-                "opencode_engineer": {"ready": False, "tier": "free-local-default"},
+                "opencode_engineer": {"ready": False, "tier": "free-local"},
                 "goose_local": {"ready": False, "tier": "free-local"},
                 "aider_patch": {"ready": False, "tier": "free-local-default"},
                 "codex_engineer": {"ready": True, "tier": "quota-or-paid"},
