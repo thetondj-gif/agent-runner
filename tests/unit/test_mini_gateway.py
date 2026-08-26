@@ -39,11 +39,12 @@ def test_goose_task_is_single_argv_element(monkeypatch: pytest.MonkeyPatch) -> N
     assert "rm -rf /" in argv[-1]
 
 
-def test_opencode_defaults_to_local_ollama(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_opencode_defaults_to_proven_local_ollama(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("OPENCODE_MINI_MODEL", raising=False)
     spec = executor._agent_specs()["opencode_engineer"]
-    assert "ollama/qwen2.5:7b" in spec.argv
+    assert "ollama_local/qwen3:8b" in spec.argv
     assert spec.tier == "free-local-default"
+    assert spec.proven_on_mini is True
 
 
 def test_dawn_capability_catalog_covers_core_domains() -> None:
