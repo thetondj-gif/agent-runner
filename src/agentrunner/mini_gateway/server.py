@@ -4,6 +4,7 @@ from typing import Any
 
 from mcp.server import MCPServer
 
+from agentrunner.mini_gateway.capabilities import capability_catalog, execute_capability, plan_route
 from agentrunner.mini_gateway.executor import agent_status, run_agent
 
 mcp = MCPServer("Mac Mini Specialist Agents")
@@ -15,6 +16,41 @@ def mini_status() -> dict[str, Any]:
     return agent_status()
 
 
+@mcp.tool()
+def dawn_capabilities() -> dict[str, dict[str, Any]]:
+    """List DAWN-style capabilities, governance boundaries, and local-first execution routes."""
+    return capability_catalog()
+
+
+@mcp.tool()
+def dawn_plan_route(capability: str, allow_paid: bool = False) -> dict[str, Any]:
+    """Plan which specialist should execute a capability without making any changes."""
+    return plan_route(capability, allow_paid=allow_paid)
+
+
+@mcp.tool()
+async def dawn_execute(
+    capability: str,
+    task: str,
+    workspace: str,
+    approved: bool = False,
+    allow_paid: bool = False,
+) -> dict[str, Any]:
+    """Execute a DAWN capability through the local-first specialist router.
+
+    Publishing/deployment capabilities require approved=true. Paid/quota workers
+    are excluded unless allow_paid=true.
+    """
+    return await execute_capability(
+        capability,
+        task,
+        workspace,
+        approved=approved,
+        allow_paid=allow_paid,
+    )
+
+
+# Compatibility tools remain available for callers that want an explicit worker.
 @mcp.tool()
 async def local_build(task: str, workspace: str) -> dict[str, Any]:
     """Use the proven free/local Goose + Ollama worker for implementation work."""
@@ -70,7 +106,7 @@ async def quick_patch(task: str, workspace: str) -> dict[str, Any]:
 
 @mcp.tool()
 async def opencode_engineer(task: str, workspace: str) -> dict[str, Any]:
-    """Delegate repository implementation to the Mini's configured OpenCode agent."""
+    """Delegate repository implementation to OpenCode using the configured local model by default."""
     return await run_agent("opencode_engineer", task, workspace)
 
 
@@ -94,5 +130,5 @@ async def gemini_reviewer(task: str, workspace: str) -> dict[str, Any]:
 
 @mcp.tool()
 async def aoe_delegate(task: str, workspace: str) -> dict[str, Any]:
-    """Send a task to the configured Agent of Empires session (requires AOE_SESSION)."""
+    """Send a task to an explicitly configured existing Agent of Empires session."""
     return await run_agent("aoe_delegate", task, workspace)
