@@ -33,6 +33,7 @@ def _agent_specs() -> dict[str, AgentSpec]:
     goose_provider = os.getenv("GOOSE_MINI_PROVIDER", "custom_ollama2")
     goose_model = os.getenv("GOOSE_MINI_MODEL", "qwen2.5:7b")
     aider_model = os.getenv("AIDER_MINI_MODEL", "ollama/qwen2.5:7b")
+    opencode_model = os.getenv("OPENCODE_MINI_MODEL", "ollama/qwen2.5:7b")
     aoe_session = os.getenv("AOE_SESSION", "")
 
     return {
@@ -65,10 +66,10 @@ def _agent_specs() -> dict[str, AgentSpec]:
         ),
         "opencode_engineer": AgentSpec(
             name="opencode_engineer",
-            role="Repository coding worker using the Mini's configured OpenCode provider",
+            role="Repository coding worker using OpenCode with local Ollama by default",
             executable="opencode",
-            argv=("opencode", "run", "{task}"),
-            tier="configured-provider",
+            argv=("opencode", "run", "--model", opencode_model, "{task}"),
+            tier="free-local-default",
         ),
         "codex_engineer": AgentSpec(
             name="codex_engineer",
