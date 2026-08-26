@@ -59,7 +59,10 @@ tools = [
 providers = [
     "mistralai>=0.0.11",
 ]
-all = ["agent-runner[dev,tools,providers]"]
+gateway = [
+    "mcp[cli]>=2,<3",
+]
+all = ["agent-runner[dev,tools,providers,gateway]"]
 
 [project.urls]
 Repository = "https://github.com/Design-Arena/agent-runner"
@@ -93,7 +96,7 @@ ignore = ["E501", "B008", "C901"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
-"src/agentrunner/cli/main.py" = ["W291"]  # Allow trailing whitespace for ASCII art logo
+"src/agentrunner/cli/main.py" = ["W291"]
 
 [tool.mypy]
 python_version = "3.11"
