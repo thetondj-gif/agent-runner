@@ -158,7 +158,7 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
                 _append_log(job_id, "git diff --stat:")
                 for line in _tail_lines(diff_stat, 80):
                     _append_log(job_id, line)
-        except Exception as git_error:  # status evidence is useful but not worth masking the worker result
+        except Exception as git_error:
             _append_log(job_id, f"Post-run git evidence unavailable: {git_error}")
 
         _update_job(job_id, git_status=git_status, git_diff_stat=diff_stat)
@@ -192,7 +192,7 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "MiniRestBuilder/1.1"
+    server_version = "MiniRestBuilder/1.2"
 
     def _cors(self) -> None:
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -207,11 +207,13 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(raw)))
         self.end_headers()
         self.wfile.write(raw)
+        self.wfile.flush()
 
     def do_OPTIONS(self) -> None:  # noqa: N802
         self.send_response(204)
         self._cors()
         self.end_headers()
+        self.wfile.flush()
 
     def do_GET(self) -> None:  # noqa: N802
         if self.path == "/health":
@@ -226,7 +228,7 @@ class Handler(BaseHTTPRequestHandler):
                     "worker_ready": bool(worker_status.get("ready")),
                     "worker_proven_on_mini": bool(worker_status.get("proven_on_mini")),
                     "workspace_root": str(_workspace_root()),
-                    "bridge_version": "1.1",
+                    "bridge_version": "1.2",
                 },
             )
             return
@@ -282,15 +284,18 @@ class Handler(BaseHTTPRequestHandler):
             with JOBS_LOCK:
                 JOBS[job_id] = job
 
+            # Snapshot the acceptance payload before the worker thread can mutate
+            # the shared job object. This prevents the response race that could
+            # leave browser fetches spinning even though the worker had started.
+            response_job = dict(job)
             thread = threading.Thread(target=_execute_job, args=(job_id, payload), daemon=True)
             thread.start()
-            self._json(202, job)
+            self._json(202, response_job)
         except Exception as exc:
             self._json(400, {"error": str(exc)})
 
     def log_message(self, format: str, *args: Any) -> None:
-        # Keep output concise; requests are reflected in Venture Foundry build evidence.
-        print(f"[mini-rest-builder] {self.address_string()} {format % args}")
+        print(f"[mini-rest-builder] {self.address_string()} {format % args}", flush=True)
 
 
 def main() -> None:
@@ -304,10 +309,10 @@ def main() -> None:
     root = _workspace_root()
     worker = os.getenv("MINI_REST_BUILDER_AGENT", "goose_local").strip() or "goose_local"
     info = agent_status().get("agents", {}).get(worker, {})
-    print(f"Mini REST builder: http://{args.host}:{args.port}")
-    print(f"Worker: {worker} ready={info.get('ready')} proven_on_mini={info.get('proven_on_mini')}")
-    print(f"Workspace root: {root}")
-    print("Bridge version: 1.1 (repair jobs fail closed if no repository changes are produced)")
+    print(f"Mini REST builder: http://{args.host}:{args.port}", flush=True)
+    print(f"Worker: {worker} ready={info.get('ready')} proven_on_mini={info.get('proven_on_mini')}", flush=True)
+    print(f"Workspace root: {root}", flush=True)
+    print("Bridge version: 1.2 (race-safe acceptance response; repair jobs fail closed without repo changes)", flush=True)
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     try:
         server.serve_forever()
