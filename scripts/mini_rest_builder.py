@@ -110,6 +110,7 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
     if not isinstance(specification, dict):
         specification = {}
     repository = str(specification.get("repository") or "").strip()
+    source_type = str(specification.get("source_type") or "").strip()
     worker = os.getenv("MINI_REST_BUILDER_AGENT", "goose_local").strip() or "goose_local"
 
     try:
@@ -126,8 +127,9 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
 
         role_instruction = (
             "Act as a bounded repository repair engineer inside this isolated git clone. "
-            "Inspect before editing, preserve the existing architecture, make the smallest safe change, "
-            "run the repository's real validation commands, and report exact evidence. "
+            "You already have direct filesystem and shell access to the cloned repository at your current working directory. "
+            "Do not ask the user to run commands for you. Inspect the repository yourself before editing, preserve the existing architecture, "
+            "make the smallest safe change, run the repository's real validation commands yourself, and report exact evidence. "
             "Do not push, merge, deploy, publish, use destructive git clean/reset commands, or invent success."
         )
         result = asyncio.run(
@@ -146,10 +148,12 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
         for line in _tail_lines(stderr, 60):
             _append_log(job_id, f"stderr: {line}")
 
+        git_status = ""
+        diff_stat = ""
         try:
-            status = _run_checked(["git", "status", "--short"], cwd=workspace, timeout=30).stdout.strip()
+            git_status = _run_checked(["git", "status", "--short"], cwd=workspace, timeout=30).stdout.strip()
             diff_stat = _run_checked(["git", "diff", "--stat"], cwd=workspace, timeout=30).stdout.strip()
-            _append_log(job_id, "git status --short: " + (status or "clean"))
+            _append_log(job_id, "git status --short: " + (git_status or "clean"))
             if diff_stat:
                 _append_log(job_id, "git diff --stat:")
                 for line in _tail_lines(diff_stat, 80):
@@ -157,9 +161,26 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
         except Exception as git_error:  # status evidence is useful but not worth masking the worker result
             _append_log(job_id, f"Post-run git evidence unavailable: {git_error}")
 
-        success = bool(result.get("success"))
-        if success:
-            _append_log(job_id, "Local worker process completed successfully. This is execution completion, not deployment or acceptance-test PASS.")
+        _update_job(job_id, git_status=git_status, git_diff_stat=diff_stat)
+
+        process_success = bool(result.get("success"))
+        repair_requires_change = source_type in {"github_repo", "existing_codebase"}
+        changed = bool(git_status.strip())
+
+        if process_success and repair_requires_change and not changed:
+            error = (
+                "Worker exited successfully but produced no repository changes for an explicit repair/build job. "
+                "Execution is therefore not accepted as a completed repair."
+            )
+            _append_log(job_id, error)
+            _update_job(job_id, status="Failed", progress=100, error=error, result=result)
+            return
+
+        if process_success:
+            _append_log(
+                job_id,
+                "Local worker process completed with repository evidence. This is execution completion, not deployment or acceptance-test PASS.",
+            )
             _update_job(job_id, status="Completed", progress=100, result=result)
         else:
             error = str(result.get("error") or f"Worker exited with code {result.get('exit_code')}")
@@ -171,7 +192,7 @@ def _execute_job(job_id: str, payload: dict[str, Any]) -> None:
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "MiniRestBuilder/1.0"
+    server_version = "MiniRestBuilder/1.1"
 
     def _cors(self) -> None:
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -205,6 +226,7 @@ class Handler(BaseHTTPRequestHandler):
                     "worker_ready": bool(worker_status.get("ready")),
                     "worker_proven_on_mini": bool(worker_status.get("proven_on_mini")),
                     "workspace_root": str(_workspace_root()),
+                    "bridge_version": "1.1",
                 },
             )
             return
@@ -285,6 +307,7 @@ def main() -> None:
     print(f"Mini REST builder: http://{args.host}:{args.port}")
     print(f"Worker: {worker} ready={info.get('ready')} proven_on_mini={info.get('proven_on_mini')}")
     print(f"Workspace root: {root}")
+    print("Bridge version: 1.1 (repair jobs fail closed if no repository changes are produced)")
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     try:
         server.serve_forever()
