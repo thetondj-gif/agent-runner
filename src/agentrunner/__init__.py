@@ -25,6 +25,7 @@ from agentrunner.providers.anthropic_provider import AnthropicProvider
 
 # Provider imports
 from agentrunner.providers.base import BaseLLMProvider
+from agentrunner.providers.codex_cli_provider import CodexCLIProvider
 from agentrunner.providers.gemini_provider import GeminiProvider
 from agentrunner.providers.kimi_provider import KimiProvider
 from agentrunner.providers.mistral_provider import MistralProvider
@@ -54,6 +55,7 @@ __all__ = [
     "ConfigurationError",
     # Providers
     "BaseLLMProvider",
+    "CodexCLIProvider",
     "AnthropicProvider",
     "OpenAIProvider",
     "GeminiProvider",

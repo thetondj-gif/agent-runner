@@ -143,14 +143,17 @@ class BaseLLMProvider(ABC):
     - Or create custom ToolFormat subclass for provider-specific format
     """
 
-    def __init__(self, api_key: str, config: ProviderConfig) -> None:
+    requires_api_key = True
+
+    def __init__(self, api_key: str | None, config: ProviderConfig) -> None:
         """Initialize provider with API key and configuration.
 
         All providers must accept api_key and config as the first two parameters.
         Subclasses can extend __init__ with additional provider-specific parameters.
 
         Args:
-            api_key: API key for authentication
+            api_key: API key for authentication, or None for providers that
+                authenticate outside Agent Runner (such as Codex CLI)
             config: Provider configuration (model, temperature, etc.)
         """
         self.config = config

@@ -27,7 +27,7 @@ class ModelSpec:
     context_window: int  # Maximum context window (tokens)
     input_cost_per_1k: float  # Cost per 1K input tokens (USD)
     output_cost_per_1k: float  # Cost per 1K output tokens (USD)
-    api_key_env: str  # "OPENAI_API_KEY", "ANTHROPIC_API_KEY"
+    api_key_env: str | None  # None for providers with external/local authentication
 
     def to_model_info(self) -> "ModelInfo":
         """Convert to ModelInfo for runtime use.
@@ -127,6 +127,20 @@ ModelRegistry.register_model(
         input_cost_per_1k=0.015,
         output_cost_per_1k=0.075,
         api_key_env="OPENAI_API_KEY",
+    )
+)
+
+# Register the locally authenticated Codex CLI bridge. This is intentionally a
+# distinct provider/model from the OpenAI API-backed models above.
+ModelRegistry.register_model(
+    ModelSpec(
+        model_id="codex-cli",
+        provider_name="codex-cli",
+        display_name="Codex CLI (local authenticated session)",
+        context_window=200000,
+        input_cost_per_1k=0.0,
+        output_cost_per_1k=0.0,
+        api_key_env=None,
     )
 )
 

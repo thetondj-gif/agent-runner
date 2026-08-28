@@ -19,6 +19,7 @@ from agentrunner.core.logger import AgentRunnerLogger
 from agentrunner.core.workspace import Workspace
 from agentrunner.providers.anthropic_provider import AnthropicProvider
 from agentrunner.providers.base import ProviderConfig
+from agentrunner.providers.codex_cli_provider import CodexCLIProvider
 from agentrunner.providers.gemini_provider import GeminiProvider
 from agentrunner.providers.openai_provider import OpenAIProvider
 
@@ -43,6 +44,30 @@ class TestCreateProvider:
 
         assert isinstance(provider, OpenAIProvider)
         assert provider.config.model == "gpt-5.1-2025-11-13"
+
+    @pytest.mark.parametrize("openai_api_key", [None, "unused-api-key"])
+    def test_create_codex_cli_provider_never_uses_openai_api_key(
+        self, monkeypatch, tmp_path, openai_api_key
+    ):
+        """Codex CLI is distinct and cannot fall back to OpenAI API billing."""
+        executable = tmp_path / "codex"
+        executable.write_text("#!/bin/sh\nexit 0\n")
+        executable.chmod(0o755)
+        monkeypatch.setenv("AGENTRUNNER_CODEX_CLI_PATH", str(executable))
+        if openai_api_key is None:
+            monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+        else:
+            monkeypatch.setenv("OPENAI_API_KEY", openai_api_key)
+
+        with patch.object(
+            OpenAIProvider,
+            "__init__",
+            side_effect=AssertionError("OpenAIProvider must not be constructed"),
+        ):
+            provider = create_provider(ProviderConfig(model="codex-cli"))
+
+        assert isinstance(provider, CodexCLIProvider)
+        assert provider.requires_api_key is False
 
     def test_create_openai_provider_with_openai_prefix(self, monkeypatch):
         """Test creating OpenAI provider with openai prefix."""

@@ -9,6 +9,7 @@ from agentrunner.providers.base import (
     ProviderResponse,
     StreamChunk,
 )
+from agentrunner.providers.codex_cli_provider import CodexCLIProvider
 from agentrunner.providers.kimi_provider import KimiProvider
 from agentrunner.providers.mistral_provider import MistralProvider
 from agentrunner.providers.openai_provider import OpenAIProvider
@@ -17,6 +18,7 @@ from agentrunner.providers.zai_provider import ZAIProvider
 
 __all__ = [
     "BaseLLMProvider",
+    "CodexCLIProvider",
     "KimiProvider",
     "MistralProvider",
     "ModelInfo",

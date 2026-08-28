@@ -78,6 +78,21 @@ sudo apt-get install ripgrep
 
 Set up your API keys as environment variables. You only need keys for the providers you'll use.
 
+The `codex-cli` provider is the exception: it uses the existing local Codex CLI
+login and does not read or require `OPENAI_API_KEY`:
+
+```bash
+codex login
+codex login status
+agentrunner run "Create hello.py" --model codex-cli
+```
+
+Agent Runner invokes `codex exec --json` in a read-only sandbox rooted at the
+selected workspace. Codex returns structured Agent Runner tool requests; file
+writes and commands still pass through Agent Runner's existing validation and
+confirmation flow. Authentication or CLI failures are reported explicitly and
+never fall back to the OpenAI API provider.
+
 **Create a `.env` file in your project directory:**
 
 ```bash
@@ -122,6 +137,7 @@ agentrunner review src/main.py
 **Model management:**
 ```bash
 agentrunner models  # List all available models
+agentrunner run "Create a small Python module" --model codex-cli
 agentrunner run "Build a REST API" --model claude-sonnet-4-5-20250929
 agentrunner run "Analyze this code" --model gemini-2.5-pro
 ```
@@ -195,6 +211,9 @@ if __name__ == "__main__":
 **Using different providers:**
 
 ```python
+# Using an already authenticated Codex CLI (no OPENAI_API_KEY)
+provider_config = ProviderConfig(model="codex-cli")
+
 # Using Claude Sonnet 4.5
 os.environ['ANTHROPIC_API_KEY'] = "your-api-key"
 provider_config = ProviderConfig(
@@ -241,7 +260,7 @@ Agent Runner provides a comprehensive set of tools that work consistently across
 
 Agent Runner provides a unified interface for multiple LLM providers:
 
-**OpenAI** • **Anthropic** • **Google** • **xAI** • **Mistral** • **Moonshot AI (Kimi)** • **Z.AI**
+**Codex CLI** • **OpenAI** • **Anthropic** • **Google** • **xAI** • **Mistral** • **Moonshot AI (Kimi)** • **Z.AI**
 
 See [`src/agentrunner/providers/registry.py`](src/agentrunner/providers/registry.py) for the complete list of available models.
 
@@ -281,6 +300,21 @@ export AGENTRUNNER_TEMPERATURE="0.7"
 # Max tokens for responses (optional)
 export AGENTRUNNER_MAX_TOKENS="4096"
 ```
+
+**Codex CLI provider (optional):**
+```bash
+# Override executable discovery; otherwise Agent Runner safely resolves `codex` from PATH
+export AGENTRUNNER_CODEX_CLI_PATH="/absolute/path/to/codex"
+
+# Provider subprocess timeout in seconds (default: 300)
+export AGENTRUNNER_CODEX_CLI_TIMEOUT="300"
+
+# Override the model selected by the user's Codex configuration (optional)
+export AGENTRUNNER_CODEX_CLI_MODEL="your-codex-model"
+```
+
+The equivalent Python configuration uses `ProviderConfig.provider_extensions`
+with the keys `executable`, `timeout_s`, and `model`.
 
 **Agent behavior:**
 ```bash
@@ -410,6 +444,13 @@ echo $OPENAI_API_KEY
 # Source .env file if using one
 cd /path/to/agentrunner
 set -a && source .env && set +a
+```
+
+For `--model codex-cli`, do not add an API key. Verify the persisted local login
+instead:
+
+```bash
+codex login status
 ```
 
 ### Session Management

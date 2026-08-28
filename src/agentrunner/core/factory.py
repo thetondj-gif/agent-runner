@@ -16,6 +16,7 @@ from agentrunner.core.tokens import ContextManager, TokenCounter
 from agentrunner.core.workspace import Workspace
 from agentrunner.providers.anthropic_provider import AnthropicProvider
 from agentrunner.providers.base import BaseLLMProvider, ProviderConfig
+from agentrunner.providers.codex_cli_provider import CodexCLIProvider
 from agentrunner.providers.gemini_provider import GeminiProvider
 from agentrunner.providers.kimi_provider import KimiProvider
 from agentrunner.providers.mistral_provider import MistralProvider
@@ -32,6 +33,7 @@ if TYPE_CHECKING:
 
 # Register provider classes
 ModelRegistry.register_provider("openai", OpenAIProvider)
+ModelRegistry.register_provider("codex-cli", CodexCLIProvider)
 ModelRegistry.register_provider("anthropic", AnthropicProvider)
 ModelRegistry.register_provider("google", GeminiProvider)
 ModelRegistry.register_provider("kimi", KimiProvider)
@@ -55,13 +57,18 @@ def create_provider(provider_config: ProviderConfig) -> "BaseLLMProvider":
     # Get model spec from registry
     model_spec = ModelRegistry.get_model_spec(provider_config.model)
 
-    # Get API key
-    api_key = os.getenv(model_spec.api_key_env)
-    if not api_key:
-        raise ConfigurationError(f"API key required (set {model_spec.api_key_env})")
-
     # Get provider class and instantiate
     provider_class = ModelRegistry.get_provider_class(model_spec.provider_name)
+    api_key: str | None = None
+    if provider_class.requires_api_key:
+        if not model_spec.api_key_env:
+            raise ConfigurationError(
+                f"Provider {model_spec.provider_name} requires an API key but has no key setting"
+            )
+        api_key = os.getenv(model_spec.api_key_env)
+        if not api_key:
+            raise ConfigurationError(f"API key required (set {model_spec.api_key_env})")
+
     return provider_class(api_key=api_key, config=provider_config)
 
 
