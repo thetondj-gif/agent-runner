@@ -1,0 +1,115 @@
+{
+  "compiled_manifest": {
+    "apply_command": [
+      "python3",
+      "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py",
+      "apply",
+      "/tmp/omniroute-uec-canary.luTjnD/storage.sqlite"
+    ],
+    "artifact_paths": [
+      "/Users/alinton/.dawn-genesis/runtime/omniroute/package.json",
+      "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py"
+    ],
+    "executable": "OmniRoute",
+    "version_command": [
+      "node",
+      "-p",
+      "require('./package.json').version"
+    ]
+  },
+  "target_environment_profile": {
+    "attach_command": [
+      "curl",
+      "-fsS",
+      "--max-time",
+      "5",
+      "http://127.0.0.1:20129/v1/models"
+    ],
+    "environment": {
+      "DATA_DIR": "/tmp/omniroute-uec-canary.luTjnD"
+    },
+    "working_directory": "/Users/alinton/.dawn-genesis/runtime/omniroute"
+  },
+  "connection_requirements": [
+    {
+      "auth_required": false,
+      "connection_handle": "loopback:omniroute-api",
+      "state_command": [
+        "curl",
+        "-fsS",
+        "--max-time",
+        "5",
+        "http://127.0.0.1:20129/v1/models"
+      ]
+    },
+    {
+      "auth_required": false,
+      "connection_handle": "loopback:ollama-local",
+      "state_command": [
+        "curl",
+        "-fsS",
+        "--max-time",
+        "5",
+        "http://127.0.0.1:11434/api/version"
+      ]
+    }
+  ],
+  "startup_tests": [
+    {
+      "command": [
+        "python3",
+        "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py",
+        "status",
+        "/tmp/omniroute-uec-canary.luTjnD/storage.sqlite"
+      ],
+      "expected": {
+        "contains": "CONFIGURED"
+      },
+      "name": "compiled route is configured"
+    },
+    {
+      "command": [
+        "curl",
+        "-fsS",
+        "--max-time",
+        "5",
+        "http://127.0.0.1:11434/api/version"
+      ],
+      "expected": {
+        "contains": "0.33.1"
+      },
+      "name": "Ollama startup"
+    }
+  ],
+  "capability_tests": [
+    {
+      "command": [
+        "curl",
+        "-i",
+        "-sS",
+        "--max-time",
+        "180",
+        "-H",
+        "content-type: application/json",
+        "-H",
+        "x-omniroute-no-cache: true",
+        "-d",
+        "{\"model\":\"local-ollama/qwen25-7b-fast:latest\",\"messages\":[{\"role\":\"user\",\"content\":\"Reply with exactly UEC_OMNIROUTE_OK\"}],\"stream\":false,\"temperature\":0,\"max_tokens\":32}",
+        "http://127.0.0.1:20129/v1/chat/completions"
+      ],
+      "expected": {
+        "contains": "\"content\":\"UEC_OMNIROUTE_OK\""
+      },
+      "name": "OmniRoute to local Ollama generation",
+      "timeout_s": 190
+    }
+  ],
+  "rollback_plan": {
+    "command": [
+      "python3",
+      "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py",
+      "rollback",
+      "/tmp/omniroute-uec-canary.luTjnD/storage.sqlite"
+    ]
+  }
+}
