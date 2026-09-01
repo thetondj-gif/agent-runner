@@ -1,0 +1,121 @@
+{
+  "apply_state": {
+    "passed": true,
+    "state": "already_configured"
+  },
+  "artifacts": [
+    {
+      "path": "scripts/run_creative_studio_canary.py",
+      "sha256": "973f0db1aeb5426b8db5325f177b481cb8bcc5aa2c3b7de7211da4917b04d7a7"
+    },
+    {
+      "path": "/Users/alinton/.dawn-genesis/runtime/creative-foundry/creative_execution_service.py",
+      "sha256": "3dfa0d860af1d22e7f9fc9721d8f614e8abe54eaac2a80aca210a6d4b19483fc"
+    },
+    {
+      "path": "/Users/alinton/.dawn-genesis/runtime/creative-foundry/workflows/deus_intus_kontext_product_edit.manifest.json",
+      "sha256": "bbf1a83843ebbfb3313d661b26072ee185c42830877e3f49da289bc40345fda8"
+    }
+  ],
+  "auth_connectivity_state": [
+    {
+      "authenticated": "not_required",
+      "connected": true,
+      "handle": "creative-studio-local-comfyui-loopback",
+      "latency_ms": 50.143
+    }
+  ],
+  "contract_version": "1.0",
+  "environment_hash": "4de77f55d207abcc04e77ee0871ad5c715e735b19756cf253ab0662f3d51ad6c",
+  "exact_canary": [
+    [
+      ".venv/bin/python",
+      "scripts/run_creative_studio_canary.py",
+      "canary"
+    ]
+  ],
+  "executable": "/Users/alinton/Documents/ComfyUI/main.py",
+  "expected_result": [
+    {
+      "contains": "INTENTIONAL_FAILURE_FOR_ROLLBACK",
+      "exit_code": 0
+    }
+  ],
+  "final_status": "ROLLED_BACK",
+  "latency_ms": 206.601,
+  "manifest_hash": "43c11ceb90ff670269015d35f9e238b8e8c18f7ec499925c33c36ebfd2f2417b",
+  "observed_result": [
+    {
+      "command": [
+        ".venv/bin/python",
+        "scripts/run_creative_studio_canary.py",
+        "canary"
+      ],
+      "exit_code": 0,
+      "expected": {
+        "contains": "INTENTIONAL_FAILURE_FOR_ROLLBACK",
+        "exit_code": 0
+      },
+      "latency_ms": 156.662,
+      "name": "creative-studio-real-image-artifact",
+      "passed": false,
+      "stderr": "",
+      "stdout": "{\"artifact\": \"/Users/alinton/Documents/ComfyUI/output/uec/creative-studio-canary_00001_.png\", \"artifact_sha256\": \"3836d6aecb09266f5b71be24035ffaa4526ed8f70f504fab7e60e9497d7fa3ef\", \"height\": 64, \"marker\": \"UEC_CREATIVE_STUDIO_OK\", \"prompt_id\": \"3d139377-b7a5-4cf3-b0af-8fc9b4dfcb25\", \"width\": 64}\n"
+    }
+  ],
+  "receipt_hash": "73bf0825e0c5e182098a93a83c8e88c4250596f21ae6937dfdb5eb1d8ae0171c",
+  "rollback_state": {
+    "command": [
+      ".venv/bin/python",
+      "scripts/run_creative_studio_canary.py",
+      "rollback"
+    ],
+    "exit_code": 0,
+    "latency_ms": 84.729,
+    "state": "rolled_back",
+    "stderr": "",
+    "stdout": "{\"marker\": \"CREATIVE_STUDIO_ROLLED_BACK\", \"removed\": 1}\n"
+  },
+  "runtime_tokens_cost": {
+    "cost": null,
+    "runtime_ms": 156.662,
+    "tokens": {
+      "input": null,
+      "output": null
+    }
+  },
+  "startup_results": [
+    {
+      "command": [
+        ".venv/bin/python",
+        "scripts/run_creative_studio_canary.py",
+        "health"
+      ],
+      "exit_code": 0,
+      "expected": {
+        "contains": "CREATIVE_STUDIO_CONNECTED",
+        "exit_code": 0
+      },
+      "latency_ms": 49.939,
+      "name": "creative-studio-provider-ready",
+      "passed": true,
+      "stderr": "",
+      "stdout": "CREATIVE_STUDIO_CONNECTED\n"
+    }
+  ],
+  "target_state": {
+    "command": [
+      ".venv/bin/python",
+      "scripts/run_creative_studio_canary.py",
+      "health"
+    ],
+    "exit_code": 0,
+    "latency_ms": 58.446,
+    "passed": true,
+    "state": "attached",
+    "stderr": "",
+    "stdout": "CREATIVE_STUDIO_CONNECTED\n"
+  },
+  "timestamp": "2026-09-01T12:26:22.783789+00:00",
+  "version": "0.30.0"
+}
