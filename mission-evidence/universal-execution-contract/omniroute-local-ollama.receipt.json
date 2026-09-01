@@ -1,0 +1,193 @@
+{
+  "apply_state": {
+    "command": [
+      "python3",
+      "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py",
+      "apply",
+      "/tmp/omniroute-uec-canary.luTjnD/storage.sqlite"
+    ],
+    "exit_code": 0,
+    "latency_ms": 119.532,
+    "passed": true,
+    "state": "configured",
+    "stderr": "",
+    "stdout": "CONFIG_APPLIED\n"
+  },
+  "artifacts": [
+    {
+      "path": "/Users/alinton/.dawn-genesis/runtime/omniroute/package.json",
+      "sha256": "97e6e09e110b75ddb043353c7b89f61ef0fa50e615f8695ecf6ad58af0e3f64f"
+    },
+    {
+      "path": "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py",
+      "sha256": "c31c07e3e32063a64eb8aa127de547746c1f8d4481eab8e9dee143600c375bdc"
+    }
+  ],
+  "auth_connectivity_state": [
+    {
+      "authenticated": "not_required",
+      "connected": true,
+      "handle": "loopback:omniroute-api",
+      "latency_ms": 20.554
+    },
+    {
+      "authenticated": "not_required",
+      "connected": true,
+      "handle": "loopback:ollama-local",
+      "latency_ms": 11.09
+    }
+  ],
+  "contract_version": "1.0",
+  "environment_hash": "be161738ecc1ca25d55a2d8d547ad6f1f0f5d08a4d91050c32cc51e6e8c4f6e9",
+  "exact_canary": [
+    [
+      "curl",
+      "-i",
+      "-sS",
+      "--max-time",
+      "180",
+      "-H",
+      "content-type: application/json",
+      "-H",
+      "x-omniroute-no-cache: true",
+      "-d",
+      "{\"model\":\"local-ollama/qwen25-7b-fast:latest\",\"messages\":[{\"role\":\"user\",\"content\":\"Reply with exactly UEC_OMNIROUTE_OK\"}],\"stream\":false,\"temperature\":0,\"max_tokens\":32}",
+      "http://127.0.0.1:20129/v1/chat/completions"
+    ]
+  ],
+  "executable": "OmniRoute",
+  "expected_result": [
+    {
+      "contains": "\"content\":\"UEC_OMNIROUTE_OK\""
+    }
+  ],
+  "final_status": "VERIFIED",
+  "independent_observation": {
+    "observed_result": [
+      {
+        "command": [
+          "curl",
+          "-i",
+          "-sS",
+          "--max-time",
+          "180",
+          "-H",
+          "content-type: application/json",
+          "-H",
+          "x-omniroute-no-cache: true",
+          "-d",
+          "{\"model\":\"local-ollama/qwen25-7b-fast:latest\",\"messages\":[{\"role\":\"user\",\"content\":\"Reply with exactly UEC_OMNIROUTE_OK\"}],\"stream\":false,\"temperature\":0,\"max_tokens\":32}",
+          "http://127.0.0.1:20129/v1/chat/completions"
+        ],
+        "exit_code": 0,
+        "expected": {
+          "contains": "\"content\":\"UEC_OMNIROUTE_OK\""
+        },
+        "latency_ms": 664.998,
+        "name": "OmniRoute to local Ollama generation",
+        "passed": true,
+        "stderr": "",
+        "stdout": "HTTP/1.1 200 OK\ncontent-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:* https: ws: wss:; worker-src 'self' blob:; manifest-src 'self'\nx-frame-options: DENY\nx-content-type-options: nosniff\nreferrer-policy: strict-origin-when-cross-origin\npermissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()\nstrict-transport-security: max-age=63072000; includeSubDomains; preload\naccess-control-allow-headers: Content-Type, Authorization, x-api-key, anthropic-version, x-omniroute-connection, x-internal-test, accept\naccess-control-allow-methods: GET, POST, PUT, DELETE, PATCH, OPTIONS\naccess-control-allow-origin: *\nvary: Origin, Accept-Encoding, rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch\nx-omniroute-route-class: CLIENT_API\nx-request-id: eb31a12f-362e-4207-a3ab-914a699fbcb9\ncontent-length: 310\ncontent-type: application/json\nx-correlation-id: 0f5eb9d1-5dae-45a4-9a76-1cbe456f5b2f\nx-omniroute-cache: MISS\nx-omniroute-cache-hit: false\nx-omniroute-compression: off; source=off\nx-omniroute-decision: strategy=single; provider=openai-compatible-chat-uec-ollama; latency_ms=633\nx-omniroute-latency-ms: 633\nx-omniroute-model: qwen25-7b-fast:latest\nx-omniroute-provider: openai-compatible-chat-uec-ollama\nx-omniroute-request-id: a2a6f062-a1c9-45c9-8e8f-da3d85fd73a5\nx-omniroute-response-cost: 0.0000000000\nx-omniroute-session-id: fde182b2e46a7471\nx-omniroute-tokens-in: 38\nx-omniroute-tokens-out: 7\nx-omniroute-version: 3.8.49\ndate: Tue, 01 Sep 2026 12:21:48 GMT\nconnection: keep-alive\nkeep-alive: timeout=65\n\n{\"id\":\"chatcmpl-477\",\"object\":\"chat.completion\",\"created\":1788265308,\"model\":\"qwen25-7b-fast:latest\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"UEC_OMNIROUTE_OK\"}}],\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":7,\"total_tokens\":45},\"system_fingerprint\":\"fp_ollama\"}"
+      }
+    ],
+    "passed": true,
+    "timestamp": "2026-09-01T12:21:48.246862+00:00",
+    "verifier": "IndependentVerifier"
+  },
+  "latency_ms": 793.672,
+  "manifest_hash": "2ac15c29d3d236929560faf30785d2de9e8bf3d812c2d5742486fb8b6a88d314",
+  "observed_result": [
+    {
+      "command": [
+        "curl",
+        "-i",
+        "-sS",
+        "--max-time",
+        "180",
+        "-H",
+        "content-type: application/json",
+        "-H",
+        "x-omniroute-no-cache: true",
+        "-d",
+        "{\"model\":\"local-ollama/qwen25-7b-fast:latest\",\"messages\":[{\"role\":\"user\",\"content\":\"Reply with exactly UEC_OMNIROUTE_OK\"}],\"stream\":false,\"temperature\":0,\"max_tokens\":32}",
+        "http://127.0.0.1:20129/v1/chat/completions"
+      ],
+      "exit_code": 0,
+      "expected": {
+        "contains": "\"content\":\"UEC_OMNIROUTE_OK\""
+      },
+      "latency_ms": 737.849,
+      "name": "OmniRoute to local Ollama generation",
+      "passed": true,
+      "stderr": "",
+      "stdout": "HTTP/1.1 200 OK\ncontent-security-policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:* https: ws: wss:; worker-src 'self' blob:; manifest-src 'self'\nx-frame-options: DENY\nx-content-type-options: nosniff\nreferrer-policy: strict-origin-when-cross-origin\npermissions-policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()\nstrict-transport-security: max-age=63072000; includeSubDomains; preload\naccess-control-allow-headers: Content-Type, Authorization, x-api-key, anthropic-version, x-omniroute-connection, x-internal-test, accept\naccess-control-allow-methods: GET, POST, PUT, DELETE, PATCH, OPTIONS\naccess-control-allow-origin: *\nvary: Origin, Accept-Encoding, rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch\nx-omniroute-route-class: CLIENT_API\nx-request-id: 86b00987-e518-4551-84d1-5b4df7e49c69\ncontent-length: 310\ncontent-type: application/json\nx-correlation-id: 47d0e6f2-1ac1-4cef-8abd-74a5b8fe236a\nx-omniroute-cache: MISS\nx-omniroute-cache-hit: false\nx-omniroute-compression: off; source=off\nx-omniroute-decision: strategy=single; provider=openai-compatible-chat-uec-ollama; latency_ms=700\nx-omniroute-latency-ms: 700\nx-omniroute-model: qwen25-7b-fast:latest\nx-omniroute-provider: openai-compatible-chat-uec-ollama\nx-omniroute-request-id: 3b4be028-4102-4636-8bea-00b269d917ba\nx-omniroute-response-cost: 0.0000000000\nx-omniroute-session-id: fde182b2e46a7471\nx-omniroute-tokens-in: 38\nx-omniroute-tokens-out: 7\nx-omniroute-version: 3.8.49\ndate: Tue, 01 Sep 2026 12:21:47 GMT\nconnection: keep-alive\nkeep-alive: timeout=65\n\n{\"id\":\"chatcmpl-590\",\"object\":\"chat.completion\",\"created\":1788265307,\"model\":\"qwen25-7b-fast:latest\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"UEC_OMNIROUTE_OK\"}}],\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":7,\"total_tokens\":45},\"system_fingerprint\":\"fp_ollama\"}"
+    }
+  ],
+  "promotion_state": "VERIFIED",
+  "receipt_hash": "82df207725b3f713a77aa2dd163c889800cce818c7cef7379a24034ea1e60d88",
+  "rollback_state": {
+    "state": "available_not_used"
+  },
+  "runtime_tokens_cost": {
+    "cost": 0.0,
+    "runtime_ms": 737.849,
+    "tokens": {
+      "input": 38,
+      "output": 7
+    }
+  },
+  "startup_results": [
+    {
+      "command": [
+        "python3",
+        "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner/scripts/configure_omniroute_local_route.py",
+        "status",
+        "/tmp/omniroute-uec-canary.luTjnD/storage.sqlite"
+      ],
+      "exit_code": 0,
+      "expected": {
+        "contains": "CONFIGURED"
+      },
+      "latency_ms": 44.146,
+      "name": "compiled route is configured",
+      "passed": true,
+      "stderr": "",
+      "stdout": "CONFIGURED\n"
+    },
+    {
+      "command": [
+        "curl",
+        "-fsS",
+        "--max-time",
+        "5",
+        "http://127.0.0.1:11434/api/version"
+      ],
+      "exit_code": 0,
+      "expected": {
+        "contains": "0.33.1"
+      },
+      "latency_ms": 11.677,
+      "name": "Ollama startup",
+      "passed": true,
+      "stderr": "",
+      "stdout": "{\"version\":\"0.33.1\"}"
+    }
+  ],
+  "target_state": {
+    "command": [
+      "curl",
+      "-fsS",
+      "--max-time",
+      "5",
+      "http://127.0.0.1:20129/v1/models"
+    ],
+    "exit_code": 0,
+    "latency_ms": 1510.668,
+    "passed": true,
+    "state": "attached",
+    "stderr": "",
+    "stdout": "\",\"permission\":[],\"root\":\"mistral-small-2603\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Mistral Small 4\",\"context_length\":128000},{\"id\":\"ddgw/tinfoil/gpt-oss-120b\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"duckduckgo-web\",\"permission\":[],\"root\":\"tinfoil/gpt-oss-120b\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"gpt-oss 120B\",\"context_length\":400000},{\"id\":\"ddgw/tinfoil/gemma4-31b\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"duckduckgo-web\",\"permission\":[],\"root\":\"tinfoil/gemma4-31b\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Gemma 4 31B\",\"context_length\":128000},{\"id\":\"felo/felo-chat\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"felo-web\",\"permission\":[],\"root\":\"felo-chat\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Felo Chat\",\"context_length\":128000},{\"id\":\"felo/felo-search\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"felo-web\",\"permission\":[],\"root\":\"felo-search\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Felo Search\",\"context_length\":128000},{\"id\":\"felo/felo-scholar\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"felo-web\",\"permission\":[],\"root\":\"felo-scholar\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Felo Scholar\",\"context_length\":128000},{\"id\":\"felo/felo-social\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"felo-web\",\"permission\":[],\"root\":\"felo-social\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Felo Social\",\"context_length\":128000},{\"id\":\"felo/felo-document\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"felo-web\",\"permission\":[],\"root\":\"felo-document\",\"parent\":null,\"capabilities\":{\"tool_calling\":false,\"reasoning\":true},\"name\":\"Felo Document\",\"context_length\":128000},{\"id\":\"aug/sonnet4.6\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"sonnet4.6\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Sonnet 4.6\"},{\"id\":\"aug/fable-5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"fable-5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude Fable 5\"},{\"id\":\"aug/haiku4.5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"haiku4.5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Haiku 4.5\"},{\"id\":\"aug/sonnet4.5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"sonnet4.5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Sonnet 4.5\"},{\"id\":\"aug/sonnet4.6-500k\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"sonnet4.6-500k\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":500000,\"max_input_tokens\":500000,\"name\":\"Sonnet 4.6 (500K)\"},{\"id\":\"aug/sonnet5-high\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"sonnet5-high\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude Sonnet 5\"},{\"id\":\"aug/sonnet5-500k\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"sonnet5-500k\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":500000,\"max_input_tokens\":500000,\"name\":\"Claude Sonnet 5 (500K)\"},{\"id\":\"aug/opus4.5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"opus4.5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Opus 4.5\"},{\"id\":\"aug/opus4.6\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"opus4.6\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Opus 4.6\"},{\"id\":\"aug/opus4.6-500k\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"opus4.6-500k\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":500000,\"max_input_tokens\":500000,\"name\":\"Opus 4.6 (500K)\"},{\"id\":\"aug/opus4.7\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"opus4.7\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Opus 4.7\"},{\"id\":\"aug/opus4.7-500k\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"opus4.7-500k\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":500000,\"max_input_tokens\":500000,\"name\":\"Opus 4.7 (500K)\"},{\"id\":\"aug/opus4.8\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"opus4.8\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Opus 4.8\"},{\"id\":\"aug/gemini-3.1-pro-preview\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gemini-3.1-pro-preview\",\"parent\":null,\"capabilities\":{\"vision\":true,\"tool_calling\":true,\"reasoning\":true,\"thinking\":true,\"supportsThinking\":true,\"effort_tiers\":[\"none\",\"low\",\"medium\",\"high\",\"xhigh\"]},\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"context_length\":1000000,\"max_output_tokens\":65535,\"max_input_tokens\":1000000,\"name\":\"Gemini 3.1 Pro\"},{\"id\":\"aug/gpt5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5\"},{\"id\":\"aug/gpt5.1\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.1\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.1\"},{\"id\":\"aug/gpt5.2\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.2\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.2\"},{\"id\":\"aug/gpt5.4\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.4\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.4\"},{\"id\":\"aug/gpt5.4-mini\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.4-mini\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"aug/GPT-5.4 Mini\"},{\"id\":\"aug/gpt5.5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.5\"},{\"id\":\"aug/gpt5.6-luna\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.6-luna\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.6 Luna\"},{\"id\":\"aug/gpt5.6-sol\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.6-sol\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.6 Sol\"},{\"id\":\"aug/gpt5.6-terra\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"gpt5.6-terra\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"GPT-5.6 Terra\"},{\"id\":\"aug/glm-5.2\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"glm-5.2\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true,\"thinking\":true,\"supportsThinking\":true,\"effort_tiers\":[\"none\",\"low\",\"medium\",\"high\",\"xhigh\"]},\"context_length\":1000000,\"max_output_tokens\":131072,\"max_input_tokens\":1000000,\"name\":\"GLM 5.2\"},{\"id\":\"aug/kimi-k2.6\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"kimi-k2.6\",\"parent\":null,\"capabilities\":{\"vision\":true,\"tool_calling\":true,\"reasoning\":true,\"thinking\":true,\"supportsThinking\":true,\"effort_tiers\":[\"none\",\"low\",\"medium\",\"high\",\"xhigh\"]},\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"context_length\":131000,\"max_output_tokens\":262144,\"max_input_tokens\":131000,\"name\":\"Kimi K2.6\"},{\"id\":\"aug/kimi-k2.7\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"kimi-k2.7\",\"parent\":null,\"capabilities\":{\"vision\":true,\"tool_calling\":true,\"reasoning\":true,\"thinking\":true,\"supportsThinking\":true,\"effort_tiers\":[\"none\",\"low\",\"medium\",\"high\",\"xhigh\"]},\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"context_length\":131000,\"max_output_tokens\":262144,\"max_input_tokens\":131000,\"name\":\"Kimi K2.7 Code\"},{\"id\":\"aug/prism-a\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"prism-a\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Prism (Claude + Gemini)\"},{\"id\":\"aug/prism-b\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"auggie\",\"permission\":[],\"root\":\"prism-b\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Prism (GPT + Kimi)\"},{\"id\":\"oc/big-pickle\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"opencode\",\"permission\":[],\"root\":\"big-pickle\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true,\"thinking\":true,\"supportsThinking\":true,\"effort_tiers\":[\"none\",\"low\",\"medium\",\"high\",\"xhigh\"]},\"name\":\"Big Pickle\",\"context_length\":200000},{\"id\":\"oc/deepseek-v4-flash-free\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"opencode\",\"permission\":[],\"root\":\"deepseek-v4-flash-free\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true,\"thinking\":true,\"supportsThinking\":true,\"effort_tiers\":[\"none\",\"low\",\"medium\",\"high\",\"xhigh\"]},\"context_length\":1000000,\"max_output_tokens\":384000,\"max_input_tokens\":1000000,\"name\":\"DeepSeek V4 Flash Free\"},{\"id\":\"oc/mimo-v2.5-free\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"opencode\",\"permission\":[],\"root\":\"mimo-v2.5-free\",\"parent\":null,\"capabilities\":{\"vision\":true,\"tool_calling\":true,\"reasoning\":true},\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"context_length\":1048576,\"max_output_tokens\":131072,\"max_input_tokens\":1048576,\"name\":\"mimo-v2.5-free\"},{\"id\":\"oc/hy3-free\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"opencode\",\"permission\":[],\"root\":\"hy3-free\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"hy3-free\",\"context_length\":200000},{\"id\":\"oc/nemotron-3-ultra-free\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"opencode\",\"permission\":[],\"root\":\"nemotron-3-ultra-free\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"nemotron-3-ultra-free\",\"context_length\":200000},{\"id\":\"oc/north-mini-code-free\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"opencode\",\"permission\":[],\"root\":\"north-mini-code-free\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"north-mini-code-free\",\"context_length\":200000},{\"id\":\"tllm/GPT_5_4\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_5_4\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":400000,\"max_input_tokens\":400000,\"name\":\"GPT-5.4 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/GPT_5_3\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_5_3\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":400000,\"max_input_tokens\":400000,\"name\":\"GPT-5.3 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/GPT_5_2\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_5_2\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":400000,\"max_input_tokens\":400000,\"name\":\"GPT-5.2 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/GPT_5_1\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_5_1\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":400000,\"max_input_tokens\":400000,\"name\":\"GPT-5.1 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/GPT_5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":400000,\"max_input_tokens\":400000,\"name\":\"GPT-5 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/GPT_o4_mini\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_o4_mini\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"o4-mini (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/GPT_o3_mini\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_o3_mini\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"o3-mini (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/gemini_3_pro\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"gemini_3_pro\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":1000000,\"max_input_tokens\":1000000,\"name\":\"Gemini 3 Pro (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/gemini_2_5_pro\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"gemini_2_5_pro\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":1000000,\"max_input_tokens\":1000000,\"name\":\"Gemini 2.5 Pro (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/gemini_2_0_flash\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"gemini_2_0_flash\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":1000000,\"max_input_tokens\":1000000,\"name\":\"Gemini 2.0 Flash (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/gemini_1_5_flash\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"gemini_1_5_flash\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":1000000,\"max_input_tokens\":1000000,\"name\":\"Gemini 1.5 Flash (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/CLAUDE_4_6_OPUS\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"CLAUDE_4_6_OPUS\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude 4.6 Opus (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/CLAUDE_4_6_SONNET\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"CLAUDE_4_6_SONNET\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude 4.6 Sonnet (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/CLAUDE_4_5_HAIKU\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"CLAUDE_4_5_HAIKU\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude 4.5 Haiku (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/openrouter_gpt_4_o\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"openrouter_gpt_4_o\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"GPT-4o (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/openrouter_gpt_4_o_mini\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"openrouter_gpt_4_o_mini\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"GPT-4o mini (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/openrouter_grok_4\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"openrouter_grok_4\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"Grok 4 (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/together_deepseek_v3\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"together_deepseek_v3\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"DeepSeek V3 (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/openrouter_deepseek_r1\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"openrouter_deepseek_r1\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"DeepSeek R1 (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/sonar-pro\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"sonar-pro\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"Sonar Pro (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/GPT_4o\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"GPT_4o\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"name\":\"GPT-4o (The Old LLM \ud83c\udd93)\",\"context_length\":200000},{\"id\":\"tllm/claude_opus_4\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"claude_opus_4\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude Opus 4 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/claude_sonnet_4\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"claude_sonnet_4\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude Sonnet 4 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/claude_haiku_3_5\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"claude_haiku_3_5\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"Claude Haiku 3.5 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/deepseek_v4\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"deepseek_v4\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":200000,\"max_input_tokens\":200000,\"name\":\"DeepSeek V4 (The Old LLM \ud83c\udd93)\"},{\"id\":\"tllm/gemini_3_flash\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"theoldllm\",\"permission\":[],\"root\":\"gemini_3_flash\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":1000000,\"max_input_tokens\":1000000,\"name\":\"Gemini 3 Flash (The Old LLM \ud83c\udd93)\"},{\"id\":\"mcode/mimo-auto\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"mimocode\",\"permission\":[],\"root\":\"mimo-auto\",\"parent\":null,\"capabilities\":{\"tool_calling\":true,\"reasoning\":true},\"context_length\":1000000,\"max_output_tokens\":128000,\"max_input_tokens\":1000000,\"name\":\"MiMo Auto\"},{\"id\":\"veoaifree-web/veo\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"veoaifree-web\",\"type\":\"video\",\"capabilities\":{\"tool_calling\":false,\"reasoning\":false,\"thinking\":false,\"supportsThinking\":false},\"name\":\"veoaifree-web/VEO 3.1\"},{\"id\":\"veo-free/veo\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"veoaifree-web\",\"type\":\"video\",\"capabilities\":{\"tool_calling\":false,\"reasoning\":false,\"thinking\":false,\"supportsThinking\":false},\"name\":\"veo-free/VEO 3.1\"},{\"id\":\"veoaifree-web/seedance\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"veoaifree-web\",\"type\":\"video\",\"capabilities\":{\"tool_calling\":false,\"reasoning\":false,\"thinking\":false,\"supportsThinking\":false},\"name\":\"veoaifree-web/Seedance\"},{\"id\":\"veo-free/seedance\",\"object\":\"model\",\"created\":1788265306,\"owned_by\":\"veoaifree-web\",\"type\":\"video\",\"capabilities\":{\"tool_calling\":false,\"reasoning\":false,\"thinking\":false,\"supportsThinking\":false},\"name\":\"veo-free/Seedance\"}]}"
+  },
+  "timestamp": "2026-09-01T12:21:47.580211+00:00",
+  "version": "3.8.49"
+}

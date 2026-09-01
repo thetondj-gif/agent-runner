@@ -1,0 +1,84 @@
+{
+  "compiled_manifest": {
+    "artifact_paths": [
+      "scripts/run_creative_studio_canary.py",
+      "/Users/alinton/.dawn-genesis/runtime/creative-foundry/creative_execution_service.py",
+      "/Users/alinton/.dawn-genesis/runtime/creative-foundry/workflows/deus_intus_kontext_product_edit.manifest.json"
+    ],
+    "executable": "/Users/alinton/Documents/ComfyUI/main.py",
+    "name": "creative-studio-local-comfyui",
+    "version_command": [
+      ".venv/bin/python",
+      "scripts/run_creative_studio_canary.py",
+      "version"
+    ],
+    "workflow": {
+      "nodes": [
+        "EmptyImage",
+        "SaveImage"
+      ],
+      "output_prefix": "uec/creative-studio-canary"
+    }
+  },
+  "target_environment_profile": {
+    "attach_command": [
+      ".venv/bin/python",
+      "scripts/run_creative_studio_canary.py",
+      "health"
+    ],
+    "attach_timeout_s": 10,
+    "environment": {},
+    "name": "creative-studio-comfyui-local",
+    "working_directory": "/Users/alinton/.coord/repos/07b9adf1-e7ce-4aca-b05e-e9fb940cf06d/agent-runner"
+  },
+  "connection_requirements": [
+    {
+      "auth_required": false,
+      "connection_handle": "creative-studio-local-comfyui-loopback",
+      "state_command": [
+        ".venv/bin/python",
+        "scripts/run_creative_studio_canary.py",
+        "health"
+      ]
+    }
+  ],
+  "startup_tests": [
+    {
+      "command": [
+        ".venv/bin/python",
+        "scripts/run_creative_studio_canary.py",
+        "health"
+      ],
+      "expected": {
+        "contains": "CREATIVE_STUDIO_CONNECTED",
+        "exit_code": 0
+      },
+      "name": "creative-studio-provider-ready",
+      "timeout_s": 10
+    }
+  ],
+  "capability_tests": [
+    {
+      "command": [
+        ".venv/bin/python",
+        "scripts/run_creative_studio_canary.py",
+        "canary"
+      ],
+      "expected": {
+        "contains": "UEC_CREATIVE_STUDIO_OK",
+        "exit_code": 0
+      },
+      "name": "creative-studio-real-image-artifact",
+      "timeout_s": 30
+    }
+  ],
+  "rollback_plan": {
+    "command": [
+      ".venv/bin/python",
+      "scripts/run_creative_studio_canary.py",
+      "rollback"
+    ],
+    "safe": true,
+    "timeout_s": 10
+  }
+}
