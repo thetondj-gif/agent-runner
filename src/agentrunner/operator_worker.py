@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import json
 import os
 import signal
 from dataclasses import dataclass
@@ -65,7 +64,7 @@ class OperatorConfig:
     enabled: bool = False
 
     @classmethod
-    def from_env(cls) -> "OperatorConfig":
+    def from_env(cls) -> OperatorConfig:
         supabase_url = os.getenv("SUPABASE_URL", "").rstrip("/")
         endpoint = os.getenv("DEUS_OPERATOR_URL", "").strip()
         if not endpoint and supabase_url:
@@ -252,7 +251,6 @@ class PersistentOperator:
         )
 
     async def _run_agent(self, mission: dict[str, Any], workspace: Path) -> tuple[str, str]:
-        runtime = self._runtime(mission)
         extensions: dict[str, Any] = {"context_window": self.config.context_window}
         if self.config.base_url:
             extensions["base_url"] = self.config.base_url
