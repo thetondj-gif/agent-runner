@@ -55,9 +55,8 @@ def create_provider(provider_config: ProviderConfig) -> "BaseLLMProvider":
     # OpenAI-compatible local endpoints are opt-in and do not change the
     # normal registered-model path. This lets Agent Runner drive oMLX/LocalAI
     # without inventing a separate provider implementation.
-    base_url = (
-        provider_config.provider_extensions.get("base_url")
-        or os.getenv("AGENTRUNNER_OPENAI_BASE_URL")
+    base_url = provider_config.provider_extensions.get("base_url") or os.getenv(
+        "AGENTRUNNER_OPENAI_BASE_URL"
     )
 
     try:
@@ -65,11 +64,7 @@ def create_provider(provider_config: ProviderConfig) -> "BaseLLMProvider":
     except ConfigurationError:
         if not base_url:
             raise
-        api_key = (
-            os.getenv("AGENTRUNNER_OPENAI_API_KEY")
-            or os.getenv("OPENAI_API_KEY")
-            or "local"
-        )
+        api_key = os.getenv("AGENTRUNNER_OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY") or "local"
         return OpenAIProvider(
             api_key=api_key,
             config=provider_config,
