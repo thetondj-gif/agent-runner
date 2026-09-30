@@ -445,8 +445,24 @@ class OpenAIProvider(BaseLLMProvider):
         Returns:
             ModelInfo with context window size and pricing
         """
-        model_spec = ModelRegistry.get_model_spec(self.config.model)
-        return model_spec.to_model_info()
+        try:
+            model_spec = ModelRegistry.get_model_spec(self.config.model)
+            return model_spec.to_model_info()
+        except ConfigurationError:
+            # Unknown model IDs are permitted only when the caller explicitly
+            # configured an OpenAI-compatible endpoint. Local models have no
+            # external token cost; context size is supplied by configuration.
+            if not self.config.provider_extensions.get("openai_compatible"):
+                raise
+            context_window = int(
+                self.config.provider_extensions.get("context_window")
+                or os.getenv("AGENTRUNNER_CONTEXT_WINDOW", "32768")
+            )
+            return ModelInfo(
+                name=self.config.model,
+                context_window=context_window,
+                pricing={"input_per_1k": 0.0, "output_per_1k": 0.0},
+            )
 
     async def _chat_stream_responses_api(
         self,
