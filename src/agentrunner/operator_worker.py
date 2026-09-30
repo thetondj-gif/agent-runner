@@ -71,12 +71,14 @@ class OperatorConfig:
         if not endpoint and supabase_url:
             endpoint = f"{supabase_url}/functions/v1/operator-tasks"
 
-        default_workspace = Path(
-            os.getenv("DEUS_OPERATOR_DEFAULT_WORKSPACE", ".")
-        ).expanduser().resolve()
-        allowed_root = Path(
-            os.getenv("DEUS_OPERATOR_ALLOWED_ROOT", str(default_workspace))
-        ).expanduser().resolve()
+        default_workspace = (
+            Path(os.getenv("DEUS_OPERATOR_DEFAULT_WORKSPACE", ".")).expanduser().resolve()
+        )
+        allowed_root = (
+            Path(os.getenv("DEUS_OPERATOR_ALLOWED_ROOT", str(default_workspace)))
+            .expanduser()
+            .resolve()
+        )
 
         risks = tuple(
             item.strip().lower()
@@ -171,7 +173,11 @@ class PersistentOperator:
     def _resolve_workspace(self, mission: dict[str, Any]) -> Path:
         runtime = self._runtime(mission)
         requested = runtime.get("workspace_path")
-        workspace = Path(str(requested)).expanduser().resolve() if requested else self.config.default_workspace
+        workspace = (
+            Path(str(requested)).expanduser().resolve()
+            if requested
+            else self.config.default_workspace
+        )
         try:
             workspace.relative_to(self.config.allowed_root)
         except ValueError as exc:
@@ -212,7 +218,10 @@ class PersistentOperator:
         runtime = self._runtime(mission)
         acceptance = runtime.get("acceptance_criteria")
         criteria = acceptance if isinstance(acceptance, list) else []
-        criteria_text = "\n".join(f"- {item}" for item in criteria) or "- Complete the objective safely and verifiably."
+        criteria_text = (
+            "\n".join(f"- {item}" for item in criteria)
+            or "- Complete the objective safely and verifiably."
+        )
         return (
             "Own this job until the requested outcome is actually complete. "
             "Do not stop at a plan, status report, or explanation. Reuse existing project capabilities first. "
@@ -229,7 +238,9 @@ class PersistentOperator:
         runtime = self._runtime(mission)
         acceptance = runtime.get("acceptance_criteria")
         criteria = acceptance if isinstance(acceptance, list) else []
-        criteria_text = "\n".join(f"- {item}" for item in criteria) or "- Objective is complete and working."
+        criteria_text = (
+            "\n".join(f"- {item}" for item in criteria) or "- Objective is complete and working."
+        )
         return (
             "Act as an independent verifier for the work just performed in this workspace. "
             "Do not rely on the previous agent's claims. Inspect the actual files/state and run the relevant tests or QA. "
@@ -380,7 +391,12 @@ class PersistentOperator:
                 mission_id,
                 stage=stage,
                 last_error=error[:4000],
-                event={"type": "worker_error", "status": stage, "message": message, "error": error[:2000]},
+                event={
+                    "type": "worker_error",
+                    "status": stage,
+                    "message": message,
+                    "error": error[:2000],
+                },
             )
 
     async def run_once(self) -> bool:
