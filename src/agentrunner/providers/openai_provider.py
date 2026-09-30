@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import os
 import uuid
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
@@ -11,7 +12,7 @@ import tiktoken
 from openai import APIError, APITimeoutError, AsyncOpenAI, OpenAI, RateLimitError
 
 from agentrunner.core.config import AgentConfig
-from agentrunner.core.exceptions import ModelResponseError
+from agentrunner.core.exceptions import ConfigurationError, ModelResponseError
 from agentrunner.core.messages import Message
 from agentrunner.core.tool_protocol import ToolCall, ToolDefinition
 from agentrunner.providers.base import (
