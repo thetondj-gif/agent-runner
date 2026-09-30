@@ -5,6 +5,7 @@ import json
 import re
 import signal
 import time
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,8 @@ EXECUTORS = [
 VERIFIER = "workspace:04-product-engineering-and-qa"
 POLL_SECONDS = 5
 MAX_RECEIPT_AGE_SECONDS = 1200
+RESTART_GRACE_SECONDS = 60
+INSTANCE_ID = uuid.uuid4().hex[:12]
 RUNNING = True
 
 # The persistent worker is asynchronous, so a long local-model turn must not
@@ -152,6 +155,7 @@ def _dispatch(mission: dict[str, Any]) -> None:
             "executor": executor,
             "attempt": attempt,
             "submitted_at": submitted_at,
+            "worker_instance": INSTANCE_ID,
         },
     )
     log(f"dispatch {mission['id']} {executor} receipt={receipt_id}")
@@ -171,6 +175,7 @@ def _dispatch_verifier(mission: dict[str, Any], execution: dict[str, Any], pass_
             "pass": pass_no,
             "receipt_id": result["receipt_id"],
             "submitted_at": utc_now(),
+            "worker_instance": INSTANCE_ID,
             "execution_summary": execution.get("summary"),
             "execution_evidence": execution.get("evidence") or [],
         },
@@ -236,6 +241,16 @@ def _poll_execution(mission: dict[str, Any]) -> None:
 
     status = str(receipt.get("status") or "")
     age = _age_seconds(event.get("submitted_at"))
+    if (
+        status == "running_or_lost"
+        and event.get("worker_instance") != INSTANCE_ID
+        and age > RESTART_GRACE_SECONDS
+    ):
+        _retry_or_block(
+            mission,
+            f"worker restarted before execution receipt {receipt_id} completed; requeueing durable mission",
+        )
+        return
     if status in {"accepted", "running_or_lost"} and age <= MAX_RECEIPT_AGE_SECONDS:
         return
     if age <= MAX_RECEIPT_AGE_SECONDS and status == "not_found":
@@ -290,6 +305,17 @@ def _poll_verifier(mission: dict[str, Any], pass_no: int) -> None:
 
     status = str(receipt.get("status") or "")
     age = _age_seconds(event.get("submitted_at"))
+    if (
+        status == "running_or_lost"
+        and event.get("worker_instance") != INSTANCE_ID
+        and age > RESTART_GRACE_SECONDS
+    ):
+        _retry_or_block(
+            mission,
+            f"worker restarted before verifier receipt {receipt_id} completed; requeueing durable mission",
+            list(execution["evidence"]),
+        )
+        return
     if status in {"accepted", "running_or_lost"} and age <= MAX_RECEIPT_AGE_SECONDS:
         return
     if age <= MAX_RECEIPT_AGE_SECONDS and status == "not_found":
