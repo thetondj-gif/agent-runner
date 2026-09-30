@@ -465,3 +465,36 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+## Persistent Deus Operator (opt-in sidecar)
+
+This fork includes an **opt-in persistent worker** for durable Deus missions. It reuses the existing Agent Runner harness and the existing Deus `operator-tasks` API; it does not replace or alter the normal `agentrunner run`, `chat`, or `review` flows.
+
+The worker is disabled unless `DEUS_OPERATOR_ENABLED=1`. It claims only missions already approved by the task API, confines file access to an allowed workspace root, checkpoints Agent Runner sessions, retries recoverable failures, requeues stale `RUNNING` missions after process interruption, and performs a separate verification pass before closing a mission.
+
+Required configuration:
+
+```bash
+export DEUS_OPERATOR_ENABLED=1
+export DEUS_OPERATOR_URL="https://<project>.supabase.co/functions/v1/operator-tasks"
+export DEUS_OPERATOR_TOKEN="<load from Keychain/secret store>"
+export DEUS_OPERATOR_DEFAULT_WORKSPACE="$HOME/Deus-Operator-Workspaces"
+export DEUS_OPERATOR_ALLOWED_ROOT="$HOME/Deus-Operator-Workspaces"
+
+# Local OpenAI-compatible model endpoint (oMLX / LocalAI)
+export DEUS_OPERATOR_MODEL="qwen3.5-9b-mlx-4bit"
+export AGENTRUNNER_OPENAI_BASE_URL="http://127.0.0.1:<port>/v1"
+export AGENTRUNNER_CONTEXT_WINDOW=32768
+
+# Permits normal project commands while CommandValidator still blocks its
+# blacklist and dangerous-pattern rules. Use an isolated allowed root.
+export DEUS_OPERATOR_STRICT_COMMANDS=0
+
+deus-operator             # persistent loop
+deus-operator --once      # claim at most one mission and exit
+```
+
+A macOS launchd template is provided at `deploy/com.deusintus.persistent-operator.plist.example`. Substitute paths/endpoint at install time and source the operator token from the machine's secret store rather than committing it.
+
+Operational behavior: `QUEUED/RETRY -> RUNNING -> COMPLETE`; execution or verification failures return to `RETRY` until the retry budget is exhausted, then become `BLOCKED`. A stale `RUNNING` mission is automatically returned to `RETRY` after the configured lease timeout, so a process or machine restart does not silently abandon the job.
