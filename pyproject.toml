@@ -95,6 +95,8 @@ ignore = ["E501", "B008", "C901"]
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "src/agentrunner/cli/main.py" = ["W291"]  # Allow trailing whitespace for ASCII art logo
+"src/agentrunner/tools/scaffold.py" = ["UP042"]  # Preserve existing str+Enum semantics
+"src/agentrunner/tools/search.py" = ["UP042"]  # Preserve existing str+Enum semantics
 
 [tool.mypy]
 python_version = "3.11"
@@ -107,6 +109,9 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "integration: tests requiring system-level integration or elevated privileges",
+]
 addopts = [
     "--strict-markers",
     "--cov=agentrunner",
