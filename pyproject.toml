@@ -68,6 +68,7 @@ Changelog = "https://github.com/Design-Arena/agent-runner/blob/main/CHANGELOG.md
 
 [project.scripts]
 agentrunner = "agentrunner.cli.main:cli"
+deus-operator = "agentrunner.operator_worker:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
