@@ -42,13 +42,19 @@ def log(message: str) -> None:
 
 
 def parse_marker(text: str, marker: str) -> dict[str, Any] | None:
+    """Extract the first JSON object after marker, tolerating markdown wrappers."""
     if not isinstance(text, str):
         return None
-    match = re.search(re.escape(marker) + r"\s+(\{.*\})\s*$", text.strip(), re.DOTALL)
-    if not match:
+    pos = text.rfind(marker)
+    if pos < 0:
+        return None
+    tail = text[pos + len(marker):]
+    start = tail.find("{")
+    end = tail.rfind("}")
+    if start < 0 or end <= start:
         return None
     try:
-        value = json.loads(match.group(1))
+        value = json.loads(tail[start:end + 1])
         return value if isinstance(value, dict) else None
     except json.JSONDecodeError:
         return None
@@ -96,6 +102,7 @@ def _executor_prompt(mission: dict[str, Any]) -> str:
     return f"""You are the execution lead inside the Deus Intus persistent operator.
 
 MISSION ID: {mission['id']}
+MISSION APPROVAL: {mission.get('approval', 'GRANTED')} — this low-risk mission has already passed the operator approval gate.
 OBJECTIVE:
 {mission['objective']}
 
@@ -106,6 +113,7 @@ OPERATING RULES:
 - Do the work now with the tools/capabilities already available to you. Do not return a plan instead of execution.
 - Reuse existing workflows, MCP tools, repos, skills and services before creating anything new.
 - Keep changes bounded to this mission.
+- Do not ask the user to approve ordinary read-only or reversible in-scope work again when MISSION APPROVAL is GRANTED.
 - Do not perform an external/public send, financial transaction, destructive live-data action, account/permission change, or irreversible action. If one becomes necessary, stop and return NEEDS_APPROVAL.
 - Verify concrete outputs as you work.
 - If blocked, identify the exact blocker and whether another existing route can be tried.
@@ -220,6 +228,11 @@ def _poll_execution(mission: dict[str, Any]) -> None:
             return
         status = str(execution.get("status") or "").upper()
         evidence = execution.get("evidence") if isinstance(execution.get("evidence"), list) else []
+        if status not in {"COMPLETE", "RETRY", "NEEDS_APPROVAL"}:
+            detail = " ".join(
+                str(execution.get(k) or "") for k in ("status", "summary", "next")
+            ).lower()
+            status = "NEEDS_APPROVAL" if "approval" in detail else "RETRY"
         if status == "NEEDS_APPROVAL":
             _update(
                 mission["id"],
