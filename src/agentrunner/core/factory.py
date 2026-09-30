@@ -52,16 +52,46 @@ def create_provider(provider_config: ProviderConfig) -> "BaseLLMProvider":
     Raises:
         ConfigurationError: If model not registered or API key missing
     """
-    # Get model spec from registry
-    model_spec = ModelRegistry.get_model_spec(provider_config.model)
+    # OpenAI-compatible local endpoints are opt-in and do not change the
+    # normal registered-model path. This lets Agent Runner drive oMLX/LocalAI
+    # without inventing a separate provider implementation.
+    base_url = (
+        provider_config.provider_extensions.get("base_url")
+        or os.getenv("AGENTRUNNER_OPENAI_BASE_URL")
+    )
+
+    try:
+        model_spec = ModelRegistry.get_model_spec(provider_config.model)
+    except ConfigurationError:
+        if not base_url:
+            raise
+        api_key = (
+            os.getenv("AGENTRUNNER_OPENAI_API_KEY")
+            or os.getenv("OPENAI_API_KEY")
+            or "local"
+        )
+        return OpenAIProvider(
+            api_key=api_key,
+            config=provider_config,
+            base_url=str(base_url),
+        )
 
     # Get API key
     api_key = os.getenv(model_spec.api_key_env)
     if not api_key:
-        raise ConfigurationError(f"API key required (set {model_spec.api_key_env})")
+        if model_spec.provider_name == "openai" and base_url:
+            api_key = os.getenv("AGENTRUNNER_OPENAI_API_KEY") or "local"
+        else:
+            raise ConfigurationError(f"API key required (set {model_spec.api_key_env})")
 
     # Get provider class and instantiate
     provider_class = ModelRegistry.get_provider_class(model_spec.provider_name)
+    if provider_class is OpenAIProvider and base_url:
+        return provider_class(
+            api_key=api_key,
+            config=provider_config,
+            base_url=str(base_url),
+        )
     return provider_class(api_key=api_key, config=provider_config)
 
 
