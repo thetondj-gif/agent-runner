@@ -14,7 +14,9 @@ from agentrunner.providers.mistral_provider import MistralProvider
 @pytest.fixture
 def mistral_provider():
     """Create MistralProvider instance with mocked API."""
-    with patch("agentrunner.providers.mistral_provider.OpenAI") as mock_client_class, patch(\n        "agentrunner.providers.mistral_provider.AsyncOpenAI"\n    ):
+    with patch("agentrunner.providers.mistral_provider.OpenAI") as mock_client_class, patch(
+        "agentrunner.providers.mistral_provider.AsyncOpenAI"
+    ):
         mock_client = Mock()
         mock_client_class.return_value = mock_client
         config = ProviderConfig(model="mistral-large-latest")
@@ -64,21 +66,27 @@ class TestMistralProviderInit:
 
     def test_init_with_default_model(self):
         """Test initialization with default model."""
-        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(\n            "agentrunner.providers.mistral_provider.OpenAI"\n        ):
+        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(
+            "agentrunner.providers.mistral_provider.OpenAI"
+        ):
             config = ProviderConfig(model="mistral-large-latest")
             provider = MistralProvider(api_key="test-key", config=config)
             assert provider.config.model == "mistral-large-latest"
 
     def test_init_with_legacy_model_name(self):
         """Test initialization with legacy model name."""
-        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(\n            "agentrunner.providers.mistral_provider.OpenAI"\n        ):
+        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(
+            "agentrunner.providers.mistral_provider.OpenAI"
+        ):
             config = ProviderConfig(model="mistral-large-latest")
             provider = MistralProvider(api_key="test-key", config=config)
             assert provider.config.model == "mistral-large-latest"
 
     def test_init_with_custom_model(self):
         """Test initialization with custom model."""
-        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(\n            "agentrunner.providers.mistral_provider.OpenAI"\n        ):
+        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(
+            "agentrunner.providers.mistral_provider.OpenAI"
+        ):
             config = ProviderConfig(model="mistral-medium-latest")
             provider = MistralProvider(api_key="test-key", config=config)
             assert provider.config.model == "mistral-medium-latest"
@@ -97,7 +105,9 @@ class TestGetModelInfo:
 
     def test_get_model_info_medium(self):
         """Test getting model info for Medium model."""
-        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(\n            "agentrunner.providers.mistral_provider.OpenAI"\n        ):
+        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(
+            "agentrunner.providers.mistral_provider.OpenAI"
+        ):
             config = ProviderConfig(model="mistral-medium-latest")
             provider = MistralProvider(api_key="test-key", config=config)
             info = provider.get_model_info()
@@ -110,7 +120,9 @@ class TestGetModelInfo:
         """Test that unknown models raise ConfigurationError."""
         from agentrunner.core.exceptions import ConfigurationError
 
-        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(\n            "agentrunner.providers.mistral_provider.OpenAI"\n        ):
+        with patch("agentrunner.providers.mistral_provider.AsyncOpenAI"), patch(
+            "agentrunner.providers.mistral_provider.OpenAI"
+        ):
             config = ProviderConfig(model="unknown-model")
             provider = MistralProvider(api_key="test-key", config=config)
 
