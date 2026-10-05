@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.deusintus.persistent-operator</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__VENV__/bin/deus-operator</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__WORKSPACE__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>DEUS_OPERATOR_ENABLED</key><string>1</string>
+    <key>DEUS_OPERATOR_URL</key><string>__OPERATOR_TASKS_URL__</string>
+    <key>DEUS_OPERATOR_TOKEN</key><string>__FROM_KEYCHAIN_AT_INSTALL__</string>
+    <key>DEUS_OPERATOR_DEFAULT_WORKSPACE</key><string>__WORKSPACE__</string>
+    <key>DEUS_OPERATOR_ALLOWED_ROOT</key><string>__ALLOWED_ROOT__</string>
+    <key>DEUS_OPERATOR_MODEL</key><string>qwen3.5-9b-mlx-4bit</string>
+    <key>AGENTRUNNER_OPENAI_BASE_URL</key><string>__LOCAL_OPENAI_COMPATIBLE_URL__</string>
+    <key>AGENTRUNNER_CONTEXT_WINDOW</key><string>32768</string>
+    <key>DEUS_OPERATOR_STRICT_COMMANDS</key><string>0</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+
+  <key>StandardOutPath</key>
+  <string>__LOG_DIR__/persistent-operator.log</string>
+  <key>StandardErrorPath</key>
+  <string>__LOG_DIR__/persistent-operator.err.log</string>
+</dict>
+</plist>
